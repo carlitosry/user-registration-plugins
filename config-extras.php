@@ -125,7 +125,7 @@ function extra_user_profile_fields( $user ){
             </td>
         </tr>
         <tr>
-            <th><label for="telephone">Birthdate</label></th>
+            <th><label for="telephone">Telephone</label></th>
             <td>
                 <input type="text" name="telephone" value="<?php echo esc_attr( get_the_author_meta( 'telephone', $user->ID ) ); ?>">
             </td>
@@ -137,7 +137,7 @@ function extra_user_profile_fields( $user ){
             </td>
         </tr>
         <tr>
-            <th><label for="language">language</label></th>
+            <th><label for="language">Language</label></th>
             <td>
                 <select multiple name="language[]" id="language">
                     <?php
@@ -170,7 +170,7 @@ function extra_user_profile_fields( $user ){
                 <input type="file" name="avatar" id="avatar" class="upload-file-buttom">
                 <?php if (!empty($file)){?>
                     <img src="<?php echo $file['url']?>" alt="Avatar User" class="upload-file-preview">
-                    <span class="description">The image loaded, upload new to change.</span>
+                    <span class="description">The image was uploaded. Please upload a new to update it.</span>
                 <?php }?>
             </td>
         </tr>
@@ -184,7 +184,7 @@ function extra_user_profile_fields( $user ){
 
                 <?php if (!empty($file)){?>
                     <a href="<?php echo $file['url']?>" target="_blank" class="upload-file-preview">View CV</a>
-                    <span class="description">The file loaded, upload new to change.</span>
+                    <span class="description">The file was uploaded. Please upload a new to update it.</span>
                 <?php }?>
 
             </td>

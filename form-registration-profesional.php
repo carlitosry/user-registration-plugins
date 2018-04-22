@@ -67,7 +67,7 @@ function registration_validation($username, $password, $email, $first_name, $las
     }
 
     if ( 4 > strlen( $username ) ) {
-        $reg_errors->add( 'username_length', 'Username too short. At least 4 characters is required' );
+        $reg_errors->add( 'username_length', 'Username is too short. It must contain at least 4 characters' );
     }
 
     if ( username_exists( $username ) )
@@ -86,7 +86,7 @@ function registration_validation($username, $password, $email, $first_name, $las
     }
 
     if ( email_exists( $email ) ) {
-        $reg_errors->add( 'email', 'Email Already in use' );
+        $reg_errors->add( 'email', 'Email is already being used' );
     }
 
 

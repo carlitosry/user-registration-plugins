@@ -133,7 +133,7 @@ function registration_validation($username, $password, $email, $website, $first_
 
     if (sizeof($language) < 1 || is_null($language))
     {
-        $reg_errors->add('select', 'Required select one or most option in language');
+        $reg_errors->add('select', 'You must select one or more options in language field');
     }
 
     if (empty($username )    || empty($password )   || empty( $email )  || empty($birthdate) || empty($first_name) ||
@@ -144,11 +144,11 @@ function registration_validation($username, $password, $email, $website, $first_
     }
 
     if( $avatar['error'] ==! UPLOAD_ERR_OK || $cv['error'] ==! UPLOAD_ERR_OK) {
-        $reg_errors->add('file_error', 'Required form FILE is missing or is not valid');
+        $reg_errors->add('file_error', 'Required form file is missing or is not valid');
     }
 
     if ( 4 > strlen( $username ) ) {
-        $reg_errors->add( 'username_length', 'Username too short. At least 4 characters is required' );
+        $reg_errors->add( 'username_length', 'Username is too short. It must contain at least 4 characters' );
     }
 
     if ( username_exists( $username ) )
@@ -167,7 +167,7 @@ function registration_validation($username, $password, $email, $website, $first_
     }
 
     if ( email_exists( $email ) ) {
-        $reg_errors->add( 'email', 'Email Already in use' );
+        $reg_errors->add( 'email', 'Email is already being used' );
     }
 
     if ( ! empty( $website ) ) {
@@ -228,7 +228,7 @@ function complete_registration() {
         add_user_meta( $user, 'avatar', $uploadAvatar );
         add_user_meta( $user, 'cv', $uploadCV );
 
-        echo 'Registration complete. Goto <a href="' . get_site_url() . '/wp-login.php">login page</a>.';
+        echo 'Registration complete. Go to <a href="' . get_site_url() . '/wp-login.php">login page</a>.';
     }
 }
 
