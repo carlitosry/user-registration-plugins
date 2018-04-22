@@ -1,0 +1,20 @@
+.upload-content .description{
+    display: block;
+}
+
+.upload-file-preview  {
+    display: block;
+    max-width: 250px;
+}
+.upload-file-label  {
+    display: block;
+    margin-bottom: 10px !important;
+    cursor: pointer;
+    /* Style as you please, it will become the visible UI component. */
+}
+
+.upload-file-buttom{
+    opacity: 0;
+    /*visibility: hidden;*/
+    z-index: -1;
+}
