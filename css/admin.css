@@ -18,3 +18,122 @@
     /*visibility: hidden;*/
     z-index: -1;
 }
+
+.fusion-button.button-19 .fusion-button-text, .fusion-button.button-19 i {
+    color: #ffffff;
+}
+
+.fusion-button.button-19 {
+    border-width: 0px;
+    border-color: #ffffff;
+}
+
+.fusion-button.button-19 .fusion-button-icon-divider {
+    border-color: #ffffff;
+}
+
+.fusion-button.button-19:hover .fusion-button-text, .fusion-button.button-19:hover i,.fusion-button.button-19:focus .fusion-button-text, .fusion-button.button-19:focus i,.fusion-button.button-19:active .fusion-button-text, .fusion-button.button-19:active {
+    color: #ffffff;
+}
+
+.fusion-button.button-19:hover, .fusion-button.button-19:focus, .fusion-button.button-19:active {
+    border-width: 0px;
+    border-color: #ffffff;
+}
+
+.fusion-button.button-19:hover .fusion-button-icon-divider, .fusion-button.button-19:hover .fusion-button-icon-divider, .fusion-button.button-19:active .fusion-button-icon-divider {
+    border-color: #ffffff;
+}
+
+.fusion-button.button-19 {
+    background: #fc6042;
+}
+
+.fusion-button.button-19:hover,.button-19:focus,.fusion-button.button-19:active {
+    background: #ed492a;
+}
+
+.fusion-button.button-19 {
+    width: auto;
+}
+.fusion-button.button-2 .fusion-button-text, .fusion-button.button-2 i {
+    color: #ffffff;
+}
+
+.fusion-button.button-2 {
+    border-width: 0px;
+    border-color: #ffffff;
+}
+
+.fusion-button.button-2 .fusion-button-icon-divider {
+    border-color: #ffffff;
+}
+
+.fusion-button.button-2:hover .fusion-button-text, .fusion-button.button-2:hover i,.fusion-button.button-2:focus .fusion-button-text, .fusion-button.button-2:focus i,.fusion-button.button-2:active .fusion-button-text, .fusion-button.button-2:active {
+    color: #ffffff;
+}
+
+.fusion-button.button-2:hover, .fusion-button.button-2:focus, .fusion-button.button-2:active {
+    border-width: 0px;
+    border-color: #ffffff;
+}
+
+.fusion-button.button-2:hover .fusion-button-icon-divider, .fusion-button.button-2:hover .fusion-button-icon-divider, .fusion-button.button-2:active .fusion-button-icon-divider {
+    border-color: #ffffff;
+}
+
+.fusion-button.button-2 {
+    background: #e67e22;
+    color: #fff;
+}
+
+.fusion-button.button-2:hover,.button-2:focus,.fusion-button.button-2:active {
+    background: #d35400;
+}
+
+.fusion-button.button-2 {
+    width: auto;
+}
+
+.fusion-button.button-14 .fusion-button-text, .fusion-button.button-14 i {
+    color: #ffffff;
+}
+
+.fusion-button.button-14 {
+    border-width: 0px;
+    border-color: #ffffff;
+}
+
+.fusion-button.button-14 .fusion-button-icon-divider {
+    border-color: #ffffff;
+}
+
+.fusion-button.button-14:hover .fusion-button-text, .fusion-button.button-14:hover i,.fusion-button.button-14:focus .fusion-button-text, .fusion-button.button-14:focus i,.fusion-button.button-14:active .fusion-button-text, .fusion-button.button-14:active {
+    color: #ffffff;
+}
+
+.fusion-button.button-14:hover, .fusion-button.button-14:focus, .fusion-button.button-14:active {
+    border-width: 0px;
+    border-color: #ffffff;
+}
+
+.fusion-button.button-14:hover .fusion-button-icon-divider, .fusion-button.button-14:hover .fusion-button-icon-divider, .fusion-button.button-14:active .fusion-button-icon-divider {
+    border-color: #ffffff;
+}
+
+.fusion-button.button-14 {
+    background: #e67e22;
+}
+
+.fusion-button.button-14:hover,.button-14:focus,.fusion-button.button-14:active {
+    background: #d35400;
+}
+
+.fusion-button.button-14 {
+    width: auto;
+}
+
+.SumoSelect {
+    display: block;
+    width: 100%;
+}

@@ -6,6 +6,9 @@
  * Time: 7:12 PM
  */
 
+session_start();
+$_SESSION['captcha'] = simple_php_captcha();
+
 function registration_form($username, $password, $email, $website, $first_name, $last_name, $bio, $gender, $birthdate, $telephone, $availability, $destination, $language, $avatar, $cv) {
 
     $langs = get_terms( 'language', array(
@@ -118,26 +121,38 @@ function registration_form($username, $password, $email, $website, $first_name, 
         <div>
             <label for="cv">Upload CV</label>
             <input type="file" name="cv" value="' . ( isset( $_FILES['cv']) ? $cv : null ) . '">
-        </div>';
-
-    echo  '<input type="submit" name="submit" value="Register" class="menu-text fusion-button button-default button-small"/>
+        </div>
+        
+        <div>  
+            <label for="captcha">Enter code of the imagen</label>
+            <input type="text" name="captcha">
+            
+            <img src="'.$_SESSION['captcha']['image_src'].'">
+        </div>
+       
+        <input type="hidden" name="diferentedihidden" value="'. $_SESSION['captcha']['code'] .'">
+        <input type="submit" name="submit" value="Register" class="menu-text fusion-button button-default button-small"/>
     </form>
     ';
 }
 
-// Validation of all field of the form
-function registration_validation($username, $password, $email, $website, $first_name, $last_name, $bio, $gender, $birthdate, $telephone, $availability, $destination, $language, $avatar, $cv)
+// Validation of all field of the form Registration
+function registration_validation($username, $password, $email, $website, $first_name, $last_name, $bio, $gender, $birthdate, $telephone, $availability, $destination, $language, $avatar, $cv, $captcha, $diferentedihidden)
 {
     global $reg_errors;
     $reg_errors = new WP_Error;
+
+    if( strtolower($captcha) != strtolower($diferentedihidden)){
+        $reg_errors->add('captcha', "the code entered is invalid");
+    }
 
     if (sizeof($language) < 1 || is_null($language))
     {
         $reg_errors->add('select', 'Required select one or most option in language');
     }
 
-    if (empty($username )    || empty($password )   || empty( $email )  || empty($birthdate) || empty($first_name) ||
-        empty($last_name)    || empty($last_name)   || empty($bio)       || empty($gender)  ||
+    if (empty($username )    || empty($password )    || empty($email)     || empty($birthdate) || empty($first_name) ||
+        empty($last_name)    || empty($last_name)    || empty($bio)       || empty($gender)    ||
         empty($telephone)    || empty($availability) || empty($destination))
     {
         $reg_errors->add('field', 'Required form field is missing');
@@ -181,13 +196,16 @@ function registration_validation($username, $password, $email, $website, $first_
         foreach ( $reg_errors->get_error_messages() as $error ) {
 
             echo '<div>';
-            echo '<strong>ERROR</strong>:';
+            echo '<strong>ERROR</strong>: ';
             echo $error . '<br/>';
             echo '</div>';
 
         }
+        return false;
 
     }
+
+    return true;
 }
 
 function complete_registration() {
@@ -228,18 +246,17 @@ function complete_registration() {
         add_user_meta( $user, 'avatar', $uploadAvatar );
         add_user_meta( $user, 'cv', $uploadCV );
 
+        send_email_after_signup($user);
+
         echo 'Registration complete. Goto <a href="' . get_site_url() . '/wp-login.php">login page</a>.';
     }
 }
 
 function registration_candidate_function() {
+
     if ( isset($_POST['submit'] ) ) {
 
-        if (count($_POST['language']) > 0){
-            echo "is not Error";
-        }
-
-        registration_validation(
+        $isValid = registration_validation(
             $_POST['username'],
             $_POST['password'],
             $_POST['email'],
@@ -254,10 +271,10 @@ function registration_candidate_function() {
             $_POST['destination'],
             $_POST['language'],
             $_FILES['avatar'],
-            $_FILES['cv']
+            $_FILES['cv'],
+            $_POST['captcha'],
+            $_POST['diferentedihidden']
         );
-
-
 
         // sanitize user form input
         global $username, $password, $email, $website, $first_name, $last_name, $bio, $gender, $birthdate,
@@ -281,7 +298,9 @@ function registration_candidate_function() {
 
         // call @function complete_registration to create the user
         // only when no WP_error is found
-        complete_registration();
+        if($isValid){
+            complete_registration();
+        }
     }
 
     registration_form(
@@ -303,8 +322,11 @@ function registration_candidate_function() {
     );
 }
 
+
+
 // Register a new shortcode: [user_registration_form_candidate]
 add_shortcode( 'user_registration_form_candidate', 'user_registration_candidate_shortcode' );
+
 
 // The callback function that will replace [book]
 function user_registration_candidate_shortcode() {

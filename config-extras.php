@@ -9,13 +9,66 @@
 
 //ASSET files load admin
 add_action( 'admin_enqueue_scripts', 'load_wp_media_files' );
+add_action( 'wp_enqueue_scripts', 'load_wp_media_files' );
 function load_wp_media_files( $page ) {
-    if( $page == 'profile.php' || $page == 'user-edit.php' ) {
+
+    if( $page == 'profile.php' || $page == 'user-edit.php' || is_page_template( 'page-profile.php' ) || is_page_template( 'login.php' ) ) {
         wp_enqueue_media();
+        wp_enqueue_style('user_registration_bootstrap_css', plugins_url( '/vendors/bootstrap-3/css/bootstrap.css' , __FILE__ ), array(),  '3.3.7');
+        wp_enqueue_style('user_registration_datepicker_css', plugins_url( '/vendors/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css' , __FILE__ ), array(),  '3.3.7');
+        wp_enqueue_script( 'user_registration_bootstrap_script', plugins_url( '/vendors/bootstrap-3/js/bootstrap.js' , __FILE__ ), array('jquery'), '3.3.7' );
+        wp_enqueue_script( 'user_registration_bootstrap_datepicker_script', plugins_url( '/vendors/bootstrap-datepicker/js/bootstrap-datepicker.js' , __FILE__ ), array('jquery'), '3.3.7' );
+
+        wp_enqueue_style('user_registration_select_css', plugins_url( '/vendors/jquery.sumoselect/sumoselect.min.css' , __FILE__ ), array(),  '0.1');
+        wp_enqueue_script( 'user_registration_bootstrap_select_script', plugins_url( '/vendors/jquery.sumoselect/jquery.sumoselect.min.js' , __FILE__ ), array('jquery'), '0.1' );
         wp_enqueue_style('user_registration_css', plugins_url( '/css/admin.css' , __FILE__ ), array(),  '0.1');
-        wp_enqueue_script( 'user_registration_script', plugins_url( '/js/script.js' , __FILE__ ), array('jquery'), '0.1' );
+        wp_enqueue_script('user_registration_script', plugins_url( '/js/script.js' , __FILE__ ), array('jquery'), '0.1' );
     }
 }
+
+
+
+
+function footer_script(){ ?>
+    <script>
+        jQuery(document).ready(function(){
+            //put your js code here
+            jQuery(".datetimepicker").datepicker({
+                    format: "dd/mm/yyyy",
+                    inline: true,
+                    todayHighlight: false,
+                    startDate: '01/01/1960',
+                    autoclose: true,
+                    startView: 2
+                });
+
+            var selectedDates=[];
+            dp = jQuery(".datepicker-multiple").datepicker({
+                format: "dd/mm/yyyy",
+                multidate: true,
+                multidateSeparator: " - ",
+                inline: true,
+                todayHighlight: false,
+                startDate: 'today'
+            });
+
+            dp.on('changeDate', function(e) {
+
+                if(e.dates.length <3){
+                    selectedDates = e.dates
+                }else{
+                    dp.data('datepicker').setDates(selectedDates);
+                    alert('Can only select 2 dates')
+                }
+
+            });
+
+            jQuery('#language').SumoSelect();
+        })
+    </script>
+<?php }
+
+add_action('wp_footer', 'footer_script');
 
 // Register Taxonomies of pluigins
 function user_registration_taxonomy() {
@@ -114,18 +167,18 @@ function extra_user_profile_fields( $user ){
                 <select name="gender" id="gender">
                     <?php $gender = esc_attr( get_the_author_meta( 'gender', $user->ID ) )?>
                     <option <?php echo ($gender == 'm') ? 'selected' : '' ?> value="m">Male</option>
-                    <option <?php echo ($gender == 'f') ? 'selected' : '' ?> value="f">Famale</option>
+                    <option <?php echo ($gender == 'f') ? 'selected' : '' ?> value="f">Female</option>
                 </select>
             </td>
         </tr>
         <tr>
             <th><label for="birthdate">Birthdate</label></th>
             <td>
-                <input type="text" name="birthdate" value="<?php echo esc_attr( get_the_author_meta( 'birthdate', $user->ID ) ); ?>">
+                <input type="text" name="birthdate" id="birthdate" class="datetimepicker" value="<?php echo esc_attr( get_the_author_meta( 'birthdate', $user->ID ) ); ?>">
             </td>
         </tr>
         <tr>
-            <th><label for="telephone">Birthdate</label></th>
+            <th><label for="telephone">Telephone</label></th>
             <td>
                 <input type="text" name="telephone" value="<?php echo esc_attr( get_the_author_meta( 'telephone', $user->ID ) ); ?>">
             </td>
@@ -137,13 +190,20 @@ function extra_user_profile_fields( $user ){
             </td>
         </tr>
         <tr>
+            <th><label for="company">Company</label></th>
+            <td>
+                <input type="text" name="company" value="<?php echo esc_attr( get_the_author_meta( 'company', $user->ID ) ); ?>">
+            </td>
+        </tr>
+        <tr>
             <th><label for="language">language</label></th>
             <td>
                 <select multiple name="language[]" id="language">
                     <?php
+
                         $languages = json_decode( get_the_author_meta( 'language', $user->ID ) );
                         foreach ($langs as $lang){ ?>
-                        <option <?php echo (in_array($lang->slug, $languages) ? 'selected' : '' ); ?> value="<?php echo $lang->slug; ?>"><?php echo $lang->name; ?></option>
+                            <option <?php echo is_array($languages) && in_array($lang->slug, $languages) ? 'selected' : '' ; ?> value="<?php echo $lang->slug; ?>"><?php echo $lang->name; ?></option>
                     <?php } ?>
                 </select>
             </td>
@@ -155,7 +215,7 @@ function extra_user_profile_fields( $user ){
                     <?php
                         $destination = get_the_author_meta( 'destination', $user->ID );
                         foreach ($destinations as $desti){ ?>
-                            <option <?php echo ($desti->slug == $destination) ? 'selected' : ''; ?> value="<?php echo $desti->slug; ?>"><?php echo $desti->name; ?></option>
+                            <option <?php echo (!empty($destination) && $desti->slug == $destination) ? 'selected' : ''; ?> value="<?php echo $desti->slug; ?>"><?php echo $desti->name; ?></option>
                     <?php } ?>
                 </select>
             </td>
@@ -168,7 +228,7 @@ function extra_user_profile_fields( $user ){
 
                 <label for="avatar" class="upload-file-label button-primary">Upload Avatar</label>
                 <input type="file" name="avatar" id="avatar" class="upload-file-buttom">
-                <?php if (!empty($file)){?>
+                <?php if (array_key_exists('url', $file)){?>
                     <img src="<?php echo $file['url']?>" alt="Avatar User" class="upload-file-preview">
                     <span class="description">The image loaded, upload new to change.</span>
                 <?php }?>
@@ -178,12 +238,12 @@ function extra_user_profile_fields( $user ){
         <tr>
             <th><label for="cv">Upload CV</label></th>
             <td class="upload-content">
-                <?php $file = get_the_author_meta( 'cv', $user->ID ); ?>
+                <?php $fileCV = get_the_author_meta( 'cv', $user->ID ); ?>
                 <label for="cv" class="upload-file-label button-primary">Upload Avatar</label>
                 <input type="file" name="cv" id="cv" class="upload-file-buttom">
 
-                <?php if (!empty($file)){?>
-                    <a href="<?php echo $file['url']?>" target="_blank" class="upload-file-preview">View CV</a>
+                <?php if (array_key_exists('url', $fileCV)){?>
+                    <a href="<?php echo $fileCV['url']?>" target="_blank" class="upload-file-preview">View CV</a>
                     <span class="description">The file loaded, upload new to change.</span>
                 <?php }?>
 
@@ -206,6 +266,7 @@ function save_extra_user_profile_fields( $user_id ) {
     $language       =   $_POST['language'];
     $avatar         =   $_FILES['avatar'];
     $cv             =   $_FILES['cv'];
+    $company        =   $_POST['company'];
 
 
     if ( current_user_can( 'edit_user', $user_id ) ) {
@@ -214,10 +275,10 @@ function save_extra_user_profile_fields( $user_id ) {
         update_user_meta( $user_id, 'telephone', $telephone );
         update_user_meta( $user_id, 'availability', $availability );
         update_user_meta( $user_id, 'destination', $destination );
+        update_user_meta( $user_id, 'company', $company );
 
         $langString = json_encode($language);
         update_user_meta( $user_id, 'language', $langString );
-
 
         $_POST['action'] = 'wp_handle_upload';
         $upload_overrides = array( 'test_form' => false );
@@ -233,3 +294,41 @@ function save_extra_user_profile_fields( $user_id ) {
     return true;
 }
 
+function send_email_after_signup( $user){
+    $user_info = get_userdata($user);
+
+    $to = 'info@workinspain.sk';
+    $subject = 'New sign up of '.implode(', ', $user_info->roles).' in the Site '.get_option( 'blogname' ).'.';
+    $body = '
+    <div>
+        <p>
+            You have new register of user like '.implode(', ', $user_info->roles).' with the following information:
+        </p>';
+
+        if (in_array('candidate',  $user_info->roles)){
+            $body .= '
+            <ul>
+                <li><b>Full Name: </b>'.$user_info->first_name.' '.$user_info->last_name.'</li>
+                <li><b>Email: </b>'.$user_info->user_email.'</li >
+                <li><b>Telephone: </b>'.get_the_author_meta( 'telephone', $user ).'</li>
+                <li><b>Availability: </b>'.get_the_author_meta( 'availability', $user ).'</li>
+            </ul>
+            ';
+        }elseif (in_array('professional',  $user_info->roles)){
+            $body .= '
+            <ul>
+                <li><b>Fullname Contact: </b>'.$user_info->first_name.' '.$user_info->last_name.'</li>
+                <li><b>Company: </b>'.get_the_author_meta( 'company', $user ).'</li>
+                <li><b>Email: </b>'.$user_info->user_email.'</li>
+                <li><b>Telephone: </b>'.get_the_author_meta( 'telephone', $user ).'</li>
+            </ul>
+            ';
+        }
+        $body.= '<p><b>Note:</b> if you reply this email, you could contact directly with the email register by '.implode(', ', $user_info->roles).'.</p>
+
+    </div>';
+
+    $headers = array('Content-Type: text/html; charset=UTF-8','From: '.get_option( 'blogname' ).' register@workinspain.sk', 'Reply-To: '.$user_info->first_name.' '.$user_info->last_name.' <'.$user_info->user_email.'>',);
+
+    wp_mail( $to, $subject, $body, $headers );
+}
